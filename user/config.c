@@ -7,9 +7,9 @@
 #include <mem.h>
 #include "mmem.h"
 #include "osapi.h"
+#include "io.h"
 #include "driver/uart.h"
 #include <gpio.h>
-#include "stk500.h"
 
 #include "config.h"
 
@@ -193,12 +193,6 @@ static void config_cmd_ap(struct espconn *conn, uint8_t argc, char *argv[]) {
 	}
 }
 
-// spaces are not supported in the ssid or password
-static void io_reset(struct espconn *conn, uint8_t argc, char *argv[]) {
-	reset_arduino();
-	espconn_sent(conn, MSG_OK, strlen(MSG_OK));
-}
-
 static void config_debug_mode(struct espconn *conn, uint8_t argc, char *argv[]) {
 	uint8_t mode;
 
@@ -213,6 +207,39 @@ static void config_debug_mode(struct espconn *conn, uint8_t argc, char *argv[]) 
 	} else {
 		debug_mode = atoi(argv[1]);
 		espconn_sent(conn, (uint8_t*)MSG_OK, strlen(MSG_OK));
+	}
+}
+
+static void config_gpio(struct espconn *conn, uint8_t argc, char *argv[]) {
+	uint8_t i;
+	char *buf;
+	char vbuf[50];
+	if (argc < 1) {
+		buf = mnewstr("GPIO:\n");
+		for(i=0; i< GPIO_COUNT; i++) {
+			os_sprintf(vbuf, "%d = %d\n", i, get_gpio(i));
+			mconcat(&buf, vbuf);
+		}
+		mconcat(&buf, MSG_OK);
+		espconn_sent(conn, buf, strlen(buf));
+		os_free(buf);
+	} else if (argc > 2 ) {
+		espconn_sent(conn, MSG_ERROR, strlen(MSG_ERROR));
+	} else if (argc > 0) {
+		int gpio = atoi(argv[1]);
+		if( gpio < 0 || gpio >= GPIO_COUNT ) {
+			espconn_sent(conn, MSG_ERROR, strlen(MSG_ERROR));
+		} else {
+			if(argc == 2) {
+				int val = atoi(argv[2]);
+				set_gpio(gpio, val);
+			}
+			buf = os_malloc(MSG_BUF_LEN);
+			os_sprintf(buf, "%d = %d\n", gpio, get_gpio(gpio));
+			mconcat(&buf, MSG_OK);
+			espconn_sent(conn, buf, strlen(buf));
+			os_free(buf);
+		}
 	}
 }
 
@@ -265,8 +292,8 @@ const config_commands_t config_commands[] = {
 		{ "MODE", &config_cmd_mode },
 		{ "STA", &config_cmd_sta },
 		{ "AP", &config_cmd_ap },
-		{ "IORST", &io_reset },
 		{ "DEBUG", &config_debug_mode },
+		{ "GPIO", &config_gpio },
 		{ NULL, NULL }
 	};
 

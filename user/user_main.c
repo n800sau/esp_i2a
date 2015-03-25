@@ -22,9 +22,7 @@
 #include "cgiwifi.h"
 #include "auth.h"
 #include "driver/uart.h"
-#include "stk500.h"
 #include "server.h"
-#include <gpio.h>
 
 // AUTH_PASSWORD is used for turning on authorisation
 
@@ -59,12 +57,7 @@ should be placed above the URLs they protect.
 */
 HttpdBuiltInUrl builtInUrls[]={
 	{"/", cgiRedirect, "/index.tpl"},
-	{"/flash.bin", cgiReadFlash, NULL},
-	{"/led.tpl", cgiEspFsTemplate, tplLed},
 	{"/index.tpl", cgiEspFsTemplate, tplCounter},
-	{"/led.cgi", cgiLed, NULL},
-	{"/program.cgi", cgiProgram, NULL},
-	{"/programming.tpl", cgiEspFsTemplate, tplProgramming},
 
 	//Routines to make the /wifi URL and everything beneath it work.
 
@@ -90,7 +83,7 @@ void user_init(void) {
 // how to setup ip only
 //or change mac
 
-	gpio_init();
+	ioInit();
 
 	uart_init(BIT_RATE_115200, BIT_RATE_115200);
 
@@ -100,10 +93,8 @@ void user_init(void) {
 	os_printf("\n\n\n\n\n\n\n\n");
     os_printf("SDK version:%s\n", system_get_sdk_version());
 
-//	ioInit();
 	httpdInit(builtInUrls, 80);
 	serverInit(23);
 
-	init_stk500();
 	os_printf("\nReady\n");
 }
