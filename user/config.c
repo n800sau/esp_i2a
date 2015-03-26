@@ -216,9 +216,12 @@ static void config_gpio(struct espconn *conn, uint8_t argc, char *argv[]) {
 	char vbuf[50];
 	if (argc < 1) {
 		buf = mnewstr("GPIO:\n");
-		for(i=0; i< GPIO_COUNT; i++) {
-			os_sprintf(vbuf, "%d = %d\n", i, get_gpio(i));
-			mconcat(&buf, vbuf);
+		for(i=0; i<16; i++) {
+			int v = get_gpio(i);
+			if(v >= 0) {
+				os_sprintf(vbuf, "%d = %d\n", i, v);
+				mconcat(&buf, vbuf);
+			}
 		}
 		mconcat(&buf, MSG_OK);
 		espconn_sent(conn, buf, strlen(buf));
@@ -227,19 +230,15 @@ static void config_gpio(struct espconn *conn, uint8_t argc, char *argv[]) {
 		espconn_sent(conn, MSG_ERROR, strlen(MSG_ERROR));
 	} else if (argc > 0) {
 		int gpio = atoi(argv[1]);
-		if( gpio < 0 || gpio >= GPIO_COUNT ) {
-			espconn_sent(conn, MSG_ERROR, strlen(MSG_ERROR));
-		} else {
-			if(argc == 2) {
-				int val = atoi(argv[2]);
-				set_gpio(gpio, val);
-			}
-			buf = os_malloc(MSG_BUF_LEN);
-			os_sprintf(buf, "%d = %d\n", gpio, get_gpio(gpio));
-			mconcat(&buf, MSG_OK);
-			espconn_sent(conn, buf, strlen(buf));
-			os_free(buf);
+		if(argc == 2) {
+			int val = atoi(argv[2]);
+			set_gpio(gpio, val);
 		}
+		buf = os_malloc(MSG_BUF_LEN);
+		os_sprintf(buf, "%d = %d\n", gpio, get_gpio(gpio));
+		mconcat(&buf, MSG_OK);
+		espconn_sent(conn, buf, strlen(buf));
+		os_free(buf);
 	}
 }
 
