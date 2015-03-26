@@ -39,7 +39,7 @@ static io_t gpios[] = {
 		{12, FUNC_GPIO12, PERIPHS_IO_MUX_MTDI_U},
 		{13, FUNC_GPIO13, PERIPHS_IO_MUX_MTCK_U},
 		{14, FUNC_GPIO14, PERIPHS_IO_MUX_MTMS_U},
-//		{15, FUNC_GPIO15, PERIPHS_IO_MUX_MTDO_U}
+		{15, FUNC_GPIO15, PERIPHS_IO_MUX_MTDO_U}
 	};
 
 const int gpio_count = sizeof(gpios) / sizeof(*gpios);

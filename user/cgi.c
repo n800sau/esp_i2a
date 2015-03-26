@@ -66,14 +66,61 @@ int ICACHE_FLASH_ATTR cgiReadFlash(HttpdConnData *connData) {
 	if (*pos>=0x40200000+(512*1024)) return HTTPD_CGI_DONE; else return HTTPD_CGI_MORE;
 }
 
+#define GPIO_L1 12
+#define GPIO_L2 13
+
+#define GPIO_R1 14
+#define GPIO_R2 15
+
+#define GPIO_S1 4
+#define GPIO_S2 5
+
 int cgiCommand(HttpdConnData *connData)
 {
 	const char *p = strrchr(connData->url, '/');
 	os_printf("p=%s\n", p);
 	if(os_strcmp(p+1, "mv_stop") == 0) {
+		set_gpio(GPIO_L1, 0);
+		set_gpio(GPIO_L2, 0);
+		set_gpio(GPIO_R1, 0);
+		set_gpio(GPIO_R2, 0);
 		os_printf("Stop\n");
 	} else if(os_strcmp(p+1, "mv_fwd") == 0) {
+		set_gpio(GPIO_L1, 0);
+		set_gpio(GPIO_L2, 1);
+		set_gpio(GPIO_R1, 0);
+		set_gpio(GPIO_R2, 1);
 		os_printf("Forward\n");
+	} else if(os_strcmp(p+1, "mv_back") == 0) {
+		set_gpio(GPIO_L1, 1);
+		set_gpio(GPIO_L2, 0);
+		set_gpio(GPIO_R1, 1);
+		set_gpio(GPIO_R2, 0);
+		os_printf("Back\n");
+	} else if(os_strcmp(p+1, "t_left") == 0) {
+		set_gpio(GPIO_L1, 0);
+		set_gpio(GPIO_L2, 1);
+		set_gpio(GPIO_R1, 1);
+		set_gpio(GPIO_R2, 0);
+		os_printf("Left\n");
+	} else if(os_strcmp(p+1, "t_right") == 0) {
+		set_gpio(GPIO_L1, 1);
+		set_gpio(GPIO_L2, 0);
+		set_gpio(GPIO_R1, 0);
+		set_gpio(GPIO_R2, 1);
+		os_printf("Right\n");
+	} else if(os_strcmp(p+1, "sh_stop") == 0) {
+		set_gpio(GPIO_S1, 0);
+		set_gpio(GPIO_S2, 0);
+		os_printf("Middle stop\n");
+	} else if(os_strcmp(p+1, "sh_up") == 0) {
+		set_gpio(GPIO_S1, 1);
+		set_gpio(GPIO_S2, 0);
+		os_printf("Middle up\n");
+	} else if(os_strcmp(p+1, "sh_down") == 0) {
+		set_gpio(GPIO_S1, 0);
+		set_gpio(GPIO_S2, 1);
+		os_printf("Middle down\n");
 	}
 	httpdStartResponse(connData, 200);
 	httpdHeader(connData, "Content-Type", "application/json");

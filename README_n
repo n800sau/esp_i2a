@@ -1,6 +1,6 @@
 Included:
 
-httpd with ability to flash posted arduino firmware.hex files to connected to uart0 arduino
+httpd to control 6 gpio that is connected to 3 motors via H-bridge drivers
 
 telnet transparent to uart0 with some +++AT commands
 
@@ -13,7 +13,6 @@ RESET - reset
 MODE - wifi mode
 STA - station info
 AP - access point info
-IORST - set a gpio that is used to reset arduino to 0 for some time then set back to 1
 DEBUG <0|1> - send to telnet debug serial output
+GPIO [<pin> [0|1]] - switch gpio on or off or to see whether it is on or off
 
-max  36864?
