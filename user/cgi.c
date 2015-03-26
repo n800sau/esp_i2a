@@ -65,3 +65,20 @@ int ICACHE_FLASH_ATTR cgiReadFlash(HttpdConnData *connData) {
 	*pos+=1024;
 	if (*pos>=0x40200000+(512*1024)) return HTTPD_CGI_DONE; else return HTTPD_CGI_MORE;
 }
+
+int cgiCommand(HttpdConnData *connData)
+{
+	const char *p = strrchr(connData->url, '/');
+	os_printf("p=%s\n", p);
+	if(os_strcmp(p+1, "mv_stop") == 0) {
+		os_printf("Stop\n");
+	} else if(os_strcmp(p+1, "mv_fwd") == 0) {
+		os_printf("Forward\n");
+	}
+	httpdStartResponse(connData, 200);
+	httpdHeader(connData, "Content-Type", "application/json");
+	httpdEndHeaders(connData);
+	httpdSend(connData, "{\"result\": \"Ok\"}", -1);
+	return HTTPD_CGI_DONE;
+}
+

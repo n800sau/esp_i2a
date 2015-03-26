@@ -24,6 +24,10 @@ table.cnt {
 	background-color: #505050;
 }
 
+#reply {
+	color: green;
+}
+
 /* SQUARED ONE */
 .squaredOne {
 	width: 68px;

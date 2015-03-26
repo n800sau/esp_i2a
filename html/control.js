@@ -1,9 +1,27 @@
-function seton(ev) {
-	document.getElementById('state-msg-on').innerHTML = event.target.id + '-on';
-	ev.target.classList.add("on");
+function send_command(command) {
+	var request = new XMLHttpRequest();
+	request.onreadystatechange = function() {
+		if(request.readyState == 4)
+		{
+			if(request.status == 200) {
+				var jsonObj = JSON.parse(request.responseText);
+				document.getElementById("reply").innerHTML = command + ':' + jsonObj.result;
+			} else {
+				document.getElementById("reply").innerHTML = command + ':' + request.responseText;
+			}
+		}
+	}
+	request.open("GET", '/command/' + command, true);
+	request.send();
 }
 
-function setoff(ev) {
-	document.getElementById('state-msg-off').innerHTML = event.target.id + '-off';
-	ev.target.classList.remove("on");
+function init() {
+	document.getElementById("mv_stop").checked = 'checked';
+	document.getElementById("sh_stop").checked = 'checked';
+	send_command('mv_stop');
+	send_command('sh_stop');
+}
+
+function command(elm) {
+	send_command(elm.id);
 }

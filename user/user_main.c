@@ -73,6 +73,16 @@ HttpdBuiltInUrl builtInUrls[]={
 	{"/wifi/connect.cgi", cgiWiFiConnect, NULL},
 	{"/wifi/setmode.cgi", cgiWifiSetMode, NULL},
 
+	{"/command/mv_stop", cgiCommand, NULL},
+	{"/command/mv_fwd", cgiCommand, NULL},
+	{"/command/mv_back", cgiCommand, NULL},
+	{"/command/t_left", cgiCommand, NULL},
+	{"/command/t_right", cgiCommand, NULL},
+
+	{"/command/sh_up", cgiCommand, NULL},
+	{"/command/sh_stop", cgiCommand, NULL},
+	{"/command/sh_down", cgiCommand, NULL},
+
 	{"*", cgiEspFsHook, NULL}, //Catch-all cgi function for the filesystem
 	{NULL, NULL, NULL}
 };
