@@ -23,6 +23,7 @@
 #include "auth.h"
 #include "driver/uart.h"
 #include "server.h"
+#include "i2io.h"
 
 // AUTH_PASSWORD is used for turning on authorisation
 
@@ -94,6 +95,8 @@ void user_init(void) {
 //or change mac
 
 	ioInit();
+
+	i2io_init();
 
 	uart_init(BIT_RATE_115200, BIT_RATE_115200);
 

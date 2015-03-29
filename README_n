@@ -1,6 +1,6 @@
 Included:
 
-httpd to control 6 gpio that is connected to 3 motors via H-bridge drivers
+httpd to do something
 
 telnet transparent to uart0 with some +++AT commands
 
